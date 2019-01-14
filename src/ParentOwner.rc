@@ -1,0 +1,115 @@
+; ParentOwner by kero <xmemor>, draft 2010-07-06
+
+#include "\masm32\include\resource.h"
+
+#define CLASSNAME  "sButton"
+#define MENU1      300
+#define __sl       STATIC,   WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS
+#define __sr       __sl | SS_RIGHT
+#define __sb       __sl | WS_BORDER | SS_LEFTNOWORDWRAP
+#define __sn       __sb | SS_NOTIFY
+#define __si       __sl | SS_ICON
+
+#define __bt       BUTTON,	 WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | BS_FLAT | WS_TABSTOP
+#define __bc       BUTTON,	 WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | BS_AUTOCHECKBOX | WS_TABSTOP
+#define __bcp      __bc | BS_FLAT | BS_PUSHLIKE | WS_DISABLED
+#define __bd       __bt | WS_DISABLED
+#define __br       __bt | BS_AUTORADIOBUTTON | BS_PUSHLIKE
+#define __cb       COMBOBOX, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_BORDER | WS_VSCROLL | CBS_DROPDOWN | CBS_HASSTRINGS | CBS_AUTOHSCROLL | WS_TABSTOP
+;#define __ud       "msctls_updown32", WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_TABSTOP | WS_DISABLED
+
+Dlg DIALOGEX 260,0,454,240
+STYLE WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_CLIPCHILDREN | WS_MAXIMIZEBOX
+EXSTYLE WS_EX_TOPMOST | WS_EX_TOOLWINDOW
+FONT 8, "Tahoma"
+{
+	CONTROL "lock",                                   2000,	__bc,   5,   4,  34,  10
+	CONTROL "real",                                   200,	__bc, 130,   4,  26,  10
+	CONTROL "",                                       2002,	__sn,   0,   2, 160, 174
+	CONTROL "",                                       2001,	__sn, 158,   2, 400, 174
+	CONTROL "SetParent  (Parent)",                    2003,	__bt,   4, 180,  98,  12
+	CONTROL "Undo",                                   2004,	__bt,   4, 194,  32,  12
+	CONTROL "Redo",                                   2005,	__bt,  38, 194,  32,  12
+	CONTROL "0",                                      2006,	__bt,  72, 194,  30,  12
+	CONTROL "SetWindowLong  (gwl_hwndparent, Owner)", 2020,	__bd,   4, 208, 150,  12
+	CONTROL "0",                		                  2026,	__sr, 104, 180,  50,  10
+	CONTROL "",                                       2016, __cb, 158, 178, 174,  90
+	CONTROL "M/",                                     2030,	__bt, 334, 178,  16,  12
+  CONTROL "sWaP",                                   2015, __bt, 106, 192,  30,  12
+
+	CONTROL "P",                                  		2038,	__bcp,138, 192,  16,  12
+
+	CONTROL "Text",                                   2017,	__bd, 158, 194,  30,  12
+	CONTROL "Id",                                     2060,	__bd, 190, 194,  18,  12
+	CONTROL "Top-L",                                  2007,	__br, 212, 194,  26,  12
+	CONTROL "All",                                    2019,	__br, 240, 194,  18,  12
+	CONTROL "Desc",                                   2035,	__br, 260, 194,  24,  12
+	CONTROL "Pid",                                    2023,	__br, 286, 194,  18,  12
+	CONTROL "Tid",                                    2024,	__br, 306, 194,  18,  12
+	CONTROL "Point",                                  2046,	__br, 326, 194,  24,  12
+
+	CONTROL "Tool/",                                  2051,	__bt, 158, 208,  22,  12
+	CONTROL "App/",                                   2052,	__bt, 182, 208,  22,  12
+
+	CONTROL "Pop/",                                   2014,	__bd, 206, 208,  24,  12
+	CONTROL "Child/",                                 2025,	__bd, 232, 208,  26,  12
+	CONTROL "min/",                                   2010,	__bt, 260, 208,  22,  12
+	CONTROL "Vis / Hid",                              2011,	__bt, 284, 208,  32,  12
+	CONTROL "En / Dis",                               2009,	__bt, 318, 208,  32,  12
+	CONTROL "ClipChild  +/-",                         2012,	__bt, 282, 222,  50,  12
+	CONTROL "X",                                      2018,	__bd, 334, 222,  16,  12
+
+	CONTROL "CreateWnd  (Owner)",                     2013,	__bt,   4, 224,  76,  12
+	CONTROL "CreateDlg (Owner)",                      2021,	__bd,  82, 224,  68,  12
+	CONTROL "DlgBox (Owner)",                         2022,	__bd, 152, 224,  60,  12
+	CONTROL "MsgBox (Owner)",                         2050,	__bd, 214, 224,  64,  12
+
+	CONTROL "Topmost",                                2008,	__bt, 354, 180,  40,  12
+	CONTROL "Notopmost",                              2041,	__bt, 354, 194,  40,  12
+	CONTROL "Top",                                    2042,	__bt, 354, 208,  40,  12
+	CONTROL "Bottom",                                 2043,	__bt, 354, 222,  40,  12
+	CONTROL "Up",                                     2044,	__bt, 396, 194,  24,  12
+	CONTROL "Down",                                   2045,	__bt, 396, 208,  24,  12
+	CONTROL "Parent",                                 2049,	__bd, 396, 180,  28,  12
+	CONTROL "Child",                                  2048,	__bd, 396, 222,  28,  12
+	CONTROL "First",                                  2031,	__bd, 426, 180,  24,  12
+	CONTROL "Prev",                                   2032,	__bd, 426, 194,  24,  12
+	CONTROL "Next",                                   2033,	__bd, 426, 208,  24,  12
+	CONTROL "Last",                                   2034,	__bd, 426, 222,  24,  12
+;	CONTROL "Z-order Up/Down",                        2040, __ud, 352, 180,  10,  54
+}
+
+Dlg2 DIALOGEX 0, 0, 200, 70
+STYLE WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CLIPCHILDREN | WS_VISIBLE
+FONT 8, "Tahoma"
+MENU MENU1
+{
+	CONTROL "",                                        201,	__sl,   4,  16, 400,  14
+	CONTROL "+ / -   WS_POPUP",                        202,	__bt,  50,  42, 100,  14
+}
+
+Dlg3 DIALOGEX 0, 0, 200, 70
+STYLE WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CLIPCHILDREN | WS_VISIBLE | BS_OWNERDRAW
+CLASS CLASSNAME
+FONT 8, "Tahoma"
+MENU MENU1
+{
+	CONTROL "",                                        201,	__sl,   4,  16, 400,  14
+	CONTROL "+ / -   WS_POPUP",                        202,	__bt,  50,  42, 100,  14
+}
+
+MENU1  MENU
+BEGIN
+  POPUP " Menu"
+  BEGIN
+    MENUITEM "MenuItem", MENU1+1
+    POPUP " SubMenu"
+      BEGIN
+        MENUITEM "MenuItem", MENU1+2
+        MENUITEM "MenuItem", MENU1+3
+      END
+  END
+END
+
+1 24 "manifest"
+2 ICON "Icon_1.ico"

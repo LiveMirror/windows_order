@@ -1,0 +1,113 @@
+WIN API - Window Relationships: Parent, Owner, Z-order
+by kero <geocities.com/xmemor>
+
+(v.2010-07-06)
+
+ Added "Tool/" and "App/" triggers (keep in mind taskbar's buttons).
+
+(v.2009-06-04)
+
+ Checkbox 'real [child]' - embedded window finder uses RealChildWindowFromPoint or ChildWindowFromPointEx :
+  because ancestor can have WS_EX_LAYOUTRTL...
+
+(v.2007-03-27)
+
+ Any control right click: enable/disable
+
+ [Choose 'Window' + set <Lock>]
+ a) window under cursor + key F8
+or
+ b) select combobox list item + right click
+
+ [Choose 'new Parent|Owner']
+ a) window under cursor + key F9 (=> + preset LeftTop of 'Window')
+or
+ b) select combobox list item + left click
+
+ [Combobox: filtered window tree, via Enum*Windows]
+ 'Top-L': all top-level windows (+ message-only)
+ 'All': all (+ message-only) windows
+ 'Desc.': all descendants of 'Window'
+ 'Pid': all windows of 'Parent|Owner' process
+ 'Tid': all windows of 'Parent|Owner' thread
+ 'Point': all windows under cursor
+
+ 'M /': filtered window tree monitor (based on ComboLBox), on/off
+
+ 'sWaP' + <Lock>: swap 'Window' and 'Parent|Owner'
+
+ 'P' / 'W': set target (W - 'Window'  /  P - 'Parent|Owner')
+
+ [For target]
+ 'Pop /': WS_POPUP on/off
+ 'Child /': WS_CHILD on/off
+ 'min /': minimize / restore
+ 'Vis / Hid': Visible / Hidden
+ 'En / Dis': Enable / Disable
+ 'ClipChild +/-': WS_CLIPCHILDREN on/off
+ 'Tool /' => WS_EX_TOOLWINDOW  on/off
+ 'App /' => WS_EX_APPWINDOW  on/off
+
+ 'Text': WS_SETTEXT from combo
+ 'Id': set Id/hMenu from combo (for restoration Id/hMenu after +/-WS_CHILD,-/+WS_CHILD)
+ 'X': post WM_CLOSE
+ 'Up', 'Down': Z-position up/down
+ 'Topmost','Notopmost','Top','Bottom': SetWindowPos + HWND_*
+
+ 'First','Prev','Next','Last': set target via GetWindow + GW_HWND* (Z-order siblings)
+
+ F8 + F9 + <Close>: exit without primary parent restoration
+
+ [Window stile symbols]
+
+ L - WS_EX_LAYERED
+ T - WS_EX_TOPMOST
+ C - WS_CHILD
+ P - WS_POPUP
+ O - Overlapped (not WS_CHILD + not WS_POPUP)
+ X - WS_CHILD + WS_POPUP, forbidden :-)
+ m - mINIMIZED
+ M - Maximized
+ V - Visible
+ H - Hidden
+ D - Disabled
+ E - Enabled
+
+ [Window tree symbols]
+
+ + - child
+ ? - Tid (child) != Tid (parent)
+ . - top-level
+ ! - Tid (top-level) == Tid (Desktop)
+ = - top top-level (notopmost)
+ o - message-only
+
+
+--------
+
+MSDN -> Window Features -> Owned Windows :
+
+  * An owned window is always above its owner in the z-order.
+  * The system automatically destroys an owned window when its owner is destroyed.
+  * An owned window is hidden when its owner is minimized.
+... After creating an owned window, an application cannot transfer ownership of the window to another window.
+ << IT ISN'T TRUE !..>>
+
+MSDN -> SetWindowLong Function :
+
+... You must not call SetWindowLong with the GWL_HWNDPARENT index to change the parent of a child window.
+  Instead, use the SetParent function.
+ << NOTHING ABOUT 'OWNER' HERE !..>>
+
+MSDN -> SetParent Function :
+
+... An application can use the SetParent function to set the parent window of a pop-up, overlapped, or child window.
+  The new parent window and the child window must belong to the same application.
+ << NOT ALWAYS !..>>
+
+... if hWndNewParent is NULL, you should also clear the WS_CHILD bit and set the WS_POPUP style after calling SetParent.
+  Conversely, if hWndNewParent is not NULL and the window was previously a child of the desktop,
+  you should clear the WS_POPUP style and set the WS_CHILD style before calling SetParent.
+  Windows 2000/XP: When you change the parent of a window, you should synchronize the UISTATE of both windows.
+  For more information, see WM_CHANGEUISTATE and WM_UPDATEUISTATE.
+

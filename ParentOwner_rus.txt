@@ -1,0 +1,104 @@
+WIN API - Window Relationships: Parent, Owner, Z-order
+by kero <geocities.com/xmemor>
+
+(v.2010-07-06)
+
+ Добавлены триггеры "Tool/" и "App/" (имея в виду таскбарные кнопки).
+
+(v.2009-06-04)
+
+ Чекбокс 'real [child]' - внутренний оконный искатель использует RealChildWindowFromPoint либо ChildWindowFromPointEx :
+  учитывается возможность WS_EX_LAYOUTRTL у предка.
+
+(v.2007-03-27)
+
+ Любой контрол можно триггерно энаблить/дизаблить правым кликом мыши.
+ (Первоначально задизабленны кнопки, работать с которыми следует аккуратно).
+
+ Правый верхний static - окно слежения одновременно за несколькими окнами.
+ Его можно сдвигать влево/вправо драг'н'дропом, а возвращать в исходное - двойным кликом.
+
+ 'Lock' - запрет выбора окон путем F8, F9.
+
+ Выбор окна 'Window' + установка <Lock>:
+  a) курсор над окном + клавиша F8
+либо
+  b) выбор строки combobox-а + правый клик мыши
+
+ Выбор окна 'new Parent|Owner':
+  a) курсор над окном + клавиша F9 (вдобавок устанавливается будущая позиция окна 'Window')
+либо
+  b) выбор строки combobox-а + левый клик мыши
+
+ В combobox-е - дерево окон, загруженное через один из следующих фильтров:
+  'Top-L' => все top-level окна (+ message-only окна)
+  'All' => все окна (+ message-only окна)
+  'Desc' => все потомки окна Window
+  'Pid' => все окна того же процесса, что и NewParent|Owner
+  'Tid' => все окна того же потока, что и NewParent|Owner
+  'Point' => все окна под курсором (учитывается WindowRgn)
+
+ 'M /' => монитор дерева окон на основе ComboLBox (через выбранный оконный фильтр), on/off
+
+ Кнопка 'sWaP' при включенном <Lock> => перестановка строк 'Window' / 'Parent|Owner'
+
+ Кнопка 'P' ('W') => переключение окна-цели 'Parent|Owner' ('Window')
+
+ Для окна-цели:
+ 'Pop /' => WS_POPUP  on/off
+ 'Child /' => WS_CHILD  on/off
+ 'min /' => minimize / restore
+ 'Vis / Hid' => Visible / Hidden
+ 'En / Dis' => Enable / Disable
+ 'ClipChild +/-' => WS_CLIPCHILDREN  on/off
+ 'Tool /' => WS_EX_TOOLWINDOW  on/off
+ 'App /' => WS_EX_APPWINDOW  on/off
+  
+ 'Text' => WS_SETTEXT из эдита комбобокса
+ 'Id' => установка Id/hMenu из эдита комбобокса (для восстановления Id/hMenu после +/-WS_CHILD,-/+WS_CHILD)
+ 'X' => post WM_CLOSE
+ 'Topmost','Notopmost','Top','Bottom' =>  SetWindowPos + HWND_*"
+ 'Up','Down' => сдвиг Z-позиции вверх/вниз
+
+ 'First','Prev','Next','Last' => смена окна-цели через GetWindow + GW_HWND*  (Z-order siblings)
+
+ Нажатие кнопки 'SetParent*' или кнопки 'SetWindowLong(GWL_HWNDPARENT)' => также и сохранение в специальном стэке следующей структуры (не более 64 таких структур):
+
+  PARENTOWNER struct
+    hWnd				DWORD ?	// (дочернего) окна
+    hWndParent 	DWORD ? // прежнего парента
+    ClientRect	RECT <> // координаты окна относительно прежнего парента
+    Exstyle			DWORD ? // прежний стиль окна
+    Style				DWORD ? // прежний стиль окна
+    FncParam		DWORD ? // выбор функции: =0 => SetParent, =1 => SetWindowLong(GWL_HWNDPARENT)
+    hPrntOwner	DWORD ? // возвращенное значение выбранной функции
+    Id					DWORD ? // прежнее значение Id (для контролов) / hMenu (для top-level окон)
+    reserve			DWORD ? // reserve
+  PARENTOWNER ends
+ 
+ Работа с этим стэком: 'Undo'/'Redo', 'n' - полное Undo + сброс стэка. At your own risk :-)
+ Выход с сохранением изменений: F8 + F9 + <Close>
+ Иначе - выход с восстановлением исходных парентов, размеров, позиций.
+
+ Сокращенные обозначения оконных стилей:
+  L : WS_EX_LAYERED
+  T : WS_EX_TOPMOST
+  C : WS_CHILD
+  P : WS_POPUP
+  O : Overlapped  (not WS_CHILD + not WS_POPUP)
+  X : WS_CHILD + WS_POPUP (запрещено, и тем не менее :-) )
+  m : mINIMIZED
+  M : Maximized
+  V : Visible
+  H : Hidden
+  D : Disabled
+  E : Enabled
+	+/- : WS_CLIPCHILDREN
+
+ Сокращенные обозначения окон:
+  . : top-level
+  = : top notopmost top-level окно
+  + : child
+  ? : Tid(child)!= Tid(parent)
+  ! : Tid(top-level) = Tid(Desktop)
+  o : message-only
